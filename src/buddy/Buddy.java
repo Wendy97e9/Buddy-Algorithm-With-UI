@@ -16,7 +16,7 @@ public class Buddy {
 	
 //	private static Character[] Memory;
 	
-	//初始状态
+	//初始状态 4个引用
 	private static List<int[]> groupInitReq = new ArrayList<>();
 	//保存分配的内存
 	private static List<int[]> groupReq = new ArrayList<>();
@@ -217,10 +217,12 @@ public class Buddy {
 			t = sizex.get(i);
 			if (t[0] == beginaddr && t[1] == beginaddr + powsize - 1)
 			{
-				groupInitReq.add(t);
+//				groupInitReq.add(t);
+				groupReq.add(t);
 				sizex.remove(i);
 				textAreaOperationShow.append("初始分配成功!\n");
-				
+				String showOperation = "分配得到内存 [ "+t[0]+" -> "+t[1] + " ] 块组号是 " + size + "\n";
+				textAreaOperationShow.append(showOperation);
 				return true;
 			}
 		}
@@ -283,10 +285,12 @@ public class Buddy {
 			t2[0] = begin;
 			t2[1] = end;
 			
-			groupInitReq.add(t2);
+//			groupInitReq.add(t2);
+			groupReq.add(t2);
 			
 			textAreaOperationShow.append("初始分配成功!\n");
-			
+			String showOperation = "分配得到内存 [ "+t2[0]+" -> "+t2[1] + " ] 块组号是 " + size + "\n";
+			textAreaOperationShow.append(showOperation);
 			return true;
 		}
 		return false;
@@ -400,16 +404,43 @@ public class Buddy {
 		return true;
 	}
 	
+//	public static int[] get_neighbor(int size, int begin, int end)
+//	{
+//		if (size >= 9)
+//			return null;
+//		List<int[]> tem = Mem.get(size);
+//		System.out.println("get_neighbor groupnum "+size);
+//		for (int i = 0; i < tem.size(); i++)
+//		{
+//			int[] t = tem.get(i);
+//			if (t[0] == end + 1 || t[1] == begin - 1)
+//			{
+//				tem.remove(i);
+//				Mem.put(size, tem);
+//				return t;
+//			}
+//			
+//		}
+//		return null;
+//	}
+	
 	public static int[] get_neighbor(int size, int begin, int end)
 	{
 		if (size >= 9)
 			return null;
 		List<int[]> tem = Mem.get(size);
+		int powmergesize = (int)Math.pow(2, size + 1);
 		System.out.println("get_neighbor groupnum "+size);
 		for (int i = 0; i < tem.size(); i++)
 		{
 			int[] t = tem.get(i);
-			if (t[0] == end + 1 || t[1] == begin - 1)
+			if (t[0] == end + 1 && begin % powmergesize == 0)
+			{
+				tem.remove(i);
+				Mem.put(size, tem);
+				return t;
+			}
+			else if (t[1] == begin - 1 && t[0] % powmergesize == 0)
 			{
 				tem.remove(i);
 				Mem.put(size, tem);
