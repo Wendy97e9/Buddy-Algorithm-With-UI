@@ -192,16 +192,20 @@ public class Buddy {
 	//1 2 4 .. 512
 	public static boolean init_request_mem(JTextArea textAreaOperationShow, int beginaddr, int powsize)
 	{
-		
+		if (powsize == 0)
+		{
+			textAreaOperationShow.append("已选择初始化不占用内存\n");
+			return false;
+		}
 		if (beginaddr % powsize != 0)
 		{
-			textAreaOperationShow.append("输入不符合要求 : 起始地址应为连续页框数的倍数");
+			textAreaOperationShow.append("输入不符合要求 : 起始地址应为连续页框数的倍数\n");
 			return false;
 		}
 		int size = (int)(Math.log(powsize)/Math.log(2));	//计算组数
 		if (powsize != Math.pow(2,size))
 		{
-			textAreaOperationShow.append("输入不符合要求 : 页框数应为1, 2, 4, .. , 512中的数字");
+			textAreaOperationShow.append("输入不符合要求 : 页框数应为1, 2, 4, .. , 512中的数字\n");
 			return false;
 		}
 		List<int[]> sizex = Mem.get(size);

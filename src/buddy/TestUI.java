@@ -32,6 +32,11 @@ public class TestUI {
 	public static int string_int(String str)
 	{
 		int rt = 0;
+//		System.out.println(str);
+		if (str.equals(""))
+		{
+			return -1;
+		}
 		try {
 			rt = Integer.parseInt(str);
 		}catch(NumberFormatException e)
@@ -125,48 +130,78 @@ public class TestUI {
 		scrollPane_2.setViewportView(textAreaOperationShow);
 		
 		JButton btnSetMemPage = new JButton("\u8BBE\u7F6E");
+		
+		JButton btnInitAlloc = new JButton("\u521D\u59CB\u5206\u914D");
+		btnInitAlloc.setEnabled(false);
+		
+		JButton btnRequestMem = new JButton("\u7533\u8BF7");
+		btnRequestMem.setEnabled(false);
+		
+		JButton btnReleaseMem = new JButton("\u91CA\u653E");
+		btnReleaseMem.setEnabled(false);
+		
 		btnSetMemPage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				buddy.memsize = string_int((String) comboBoxMemSize.getSelectedItem());
 				buddy.pagesize = string_int((String) comboBoxPageSize.getSelectedItem());
+				
 				buddy.init_mem(textAreaOperationShow);
 				//buddy.printGroupsUI(textAreaFreeGroup);
 				buddy.printGroupsUI(textAreaFreeGroup);
+				
+				btnInitAlloc.setEnabled(true);
+				btnRequestMem.setEnabled(false);
+				btnReleaseMem.setEnabled(false);
 
 				// for test
 				//buddy.request_mem(7);
 			}
 		});
 		
-		JButton btnInitAlloc = new JButton("\u521D\u59CB\u5206\u914D");
+
 		btnInitAlloc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int begin = string_int((String) textFieldBeginAddr.getText());
 				int powsize = string_int((String) textFieldPageNum.getText());
+				if (begin == -1 || powsize == -1)
+					return;
+				
 				buddy.init_request_mem(textAreaOperationShow, begin, powsize);
 				buddy.printGroupsUI(textAreaFreeGroup);
+				
+				btnRequestMem.setEnabled(true);
+				btnReleaseMem.setEnabled(true);
 			}
 		});
 		
-		JButton btnRequestMem = new JButton("\u7533\u8BF7");
+
 		btnRequestMem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int reqsize = string_int((String) textFieldReqSize.getText());
+				if (reqsize == -1)
+					return;
 				//buddy.request_mem(textAreaOperationShow, reqsize);
 				buddy.request_mem(textAreaOperationShow, reqsize);
 				//buddy.printGroupsUI(textAreaFreeGroup);
 				buddy.printGroupsUI(textAreaFreeGroup);
+				
+				btnInitAlloc.setEnabled(false);
+
 			}
 		});
 		
-		JButton btnReleaseMem = new JButton("\u91CA\u653E");
+
 		btnReleaseMem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int relnum = string_int((String)textFieldRelNum.getText());
 				int groupnum = string_int((String)textFieldGroupNum.getText());
-				//buddy.release_mem(textAreaOperationShow, relnum, groupnum);
+				if (relnum == -1 || groupnum == -1)
+					return;
+				
 				buddy.release_mem(textAreaOperationShow, relnum, groupnum);
 				buddy.printGroupsUI(textAreaFreeGroup);
+				
+				btnInitAlloc.setEnabled(false);
 			}
 		});
 		
